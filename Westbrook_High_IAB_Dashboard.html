@@ -1,0 +1,2115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Westbrook High · ELA Research IAB · Spring 2026 · Sample Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.js"></script>
+<style>
+  /* =========================================================
+     ANYRA DESIGN SYSTEM — adapted with red as brand anchor
+     Cream surface, editorial typography, 3px radius, ghost
+     borders + soft shadows. Red replaces navy throughout.
+     ========================================================= */
+  :root {
+    /* Surface */
+    --surface: #fffcf7;
+    --surface-container: #f6f4ec;
+    --surface-elevated: #FEFDFB;
+
+    /* Text */
+    --on-surface: #1a1816;
+    --on-surface-variant: #3a3632;
+    --on-surface-muted: rgba(58, 54, 50, 0.55);
+
+    /* Brand anchor — red replaces navy */
+    --brand: #B11226;
+    --brand-deep: #7A0A18;
+    --brand-bright: #D62839;
+    --brand-88: rgba(177, 18, 38, 0.88);
+    --brand-33: rgba(177, 18, 38, 0.33);
+    --brand-15: rgba(177, 18, 38, 0.15);
+    --brand-08: rgba(177, 18, 38, 0.08);
+    --brand-06: rgba(177, 18, 38, 0.06);
+    --brand-soft: #F4D6DA;
+    --brand-tint: #FBEEF0;
+
+    /* Warm secondary */
+    --secondary: #6e6355;
+
+    /* Semantic data colors (preserved per brand guide) */
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-danger: #EF4444;
+
+    /* Borders */
+    --border: rgba(177, 18, 38, 0.08);
+    --border-strong: rgba(177, 18, 38, 0.18);
+
+    /* Typography */
+    --font-editorial: 'Libre Baskerville', Georgia, serif;
+    --font-headline: 'Montserrat', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-label: 'Montserrat', system-ui, sans-serif;
+
+    /* Scale */
+    --size-xs: 0.75rem;
+    --size-sm: 0.875rem;
+    --size-base: 1rem;
+    --size-lg: 1.125rem;
+    --size-xl: 1.375rem;
+    --size-2xl: 1.75rem;
+    --size-3xl: 2.5rem;
+    --size-label: 10px;
+
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+
+    --radius: 3px;
+    --radius-full: 9999px;
+
+    --shadow-warm: 0 20px 40px rgba(56, 56, 49, 0.04);
+    --shadow-ghost: 0 2px 8px rgba(177, 18, 38, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+    --shadow-ghost-hover: 0 6px 24px rgba(177, 18, 38, 0.09), 0 2px 4px rgba(0, 0, 0, 0.04);
+    --shadow-elevated: 0 2px 12px rgba(177, 18, 38, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+
+    --transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body {
+    font-family: var(--font-body);
+    font-size: var(--size-base);
+    line-height: 1.55;
+    color: var(--on-surface);
+    background: var(--surface);
+    min-height: 100vh;
+  }
+
+  /* Grain texture — premium editorial feel */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.18;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+  body > * { position: relative; z-index: 1; }
+
+  /* =========================================================
+     LAYOUT
+     ========================================================= */
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-8);
+  }
+
+  /* =========================================================
+     TOP NAV
+     ========================================================= */
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-5) var(--space-8);
+    background: rgba(255, 252, 247, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-8);
+  }
+  .top-nav-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .nav-mark {
+    width: 36px;
+    height: 36px;
+    background: var(--brand);
+    color: #fff;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+  }
+  .nav-title {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--brand);
+    letter-spacing: -0.01em;
+  }
+  .nav-meta {
+    font-family: var(--font-label);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--on-surface-muted);
+    margin-top: 2px;
+  }
+
+  /* =========================================================
+     HERO HEADER
+     ========================================================= */
+  .hero-header {
+    margin-bottom: var(--space-10);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-header h1 {
+    font-family: var(--font-editorial);
+    font-size: var(--size-3xl);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--brand);
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    margin-bottom: var(--space-3);
+    max-width: 880px;
+  }
+  .hero-header h1 .accent {
+    background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .hero-deck {
+    font-family: var(--font-body);
+    font-size: var(--size-lg);
+    color: var(--on-surface-variant);
+    max-width: 720px;
+    line-height: 1.55;
+  }
+
+  /* =========================================================
+     EYEBROW + SECTION HEADERS
+     ========================================================= */
+  .section-label {
+    display: inline-block;
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--brand);
+    padding: 4px 10px;
+    background: var(--brand-08);
+    border-radius: var(--radius);
+    margin-bottom: var(--space-3);
+  }
+  .section-title {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.875rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--brand);
+    margin-bottom: var(--space-3);
+  }
+  .section-deck {
+    font-size: var(--size-base);
+    color: var(--on-surface-variant);
+    max-width: 720px;
+    margin-bottom: var(--space-6);
+  }
+  .chart-title {
+    font-family: var(--font-label);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--on-surface-muted);
+    margin-bottom: var(--space-4);
+  }
+
+  /* =========================================================
+     TABS — simple underline tabs
+     ========================================================= */
+  .tabs {
+    display: flex;
+    gap: var(--space-6);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-8);
+  }
+  .tab {
+    font-family: var(--font-label);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--on-surface-muted);
+    padding: var(--space-3) 0;
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all var(--transition);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .tab:hover { color: var(--brand); }
+  .tab.active {
+    color: var(--brand);
+    border-bottom-color: var(--brand);
+    font-weight: 600;
+  }
+  .tab-num {
+    font-family: var(--font-headline);
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    opacity: 0.7;
+  }
+
+  .panel { display: none; animation: fadeIn 0.4s ease; }
+  .panel.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* =========================================================
+     KPI CARDS
+     ========================================================= */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+  .kpi-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-ghost);
+    transition: all var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--brand);
+    opacity: 0.18;
+    transition: opacity var(--transition);
+  }
+  .kpi-card:hover {
+    box-shadow: var(--shadow-ghost-hover);
+    transform: translateY(-2px);
+  }
+  .kpi-card:hover::before { opacity: 1; }
+  .kpi-card.highlight {
+    background: var(--brand);
+    color: #fff;
+    border-color: var(--brand);
+  }
+  .kpi-card.highlight::before { display: none; }
+  .kpi-card.highlight:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(177,18,38,0.20); }
+
+  .kpi-title {
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--on-surface-muted);
+    margin-bottom: var(--space-3);
+  }
+  .kpi-card.highlight .kpi-title { color: rgba(255,255,255,0.82); }
+
+  .kpi-value {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: var(--on-surface);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi-card.highlight .kpi-value { color: #fff; }
+  .kpi-value .unit-sm {
+    font-size: 1.25rem;
+    font-style: normal;
+    font-family: var(--font-headline);
+    color: var(--brand);
+    font-weight: 500;
+  }
+  .kpi-card.highlight .kpi-value .unit-sm { color: rgba(255,255,255,0.82); }
+  .kpi-subtitle {
+    font-size: 0.8125rem;
+    color: var(--on-surface-variant);
+  }
+  .kpi-card.highlight .kpi-subtitle { color: rgba(255,255,255,0.82); }
+
+  /* =========================================================
+     GLASS CARD
+     ========================================================= */
+  .glass-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-ghost);
+    transition: all var(--transition);
+  }
+  .glass-card:hover {
+    box-shadow: var(--shadow-ghost-hover);
+    border-color: var(--border-strong);
+  }
+
+  /* =========================================================
+     CHART CONTAINERS
+     ========================================================= */
+  .chart-container {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-ghost);
+  }
+  .chart-canvas { position: relative; height: 300px; }
+  .chart-canvas--lg { height: 360px; }
+  .chart-canvas--sm { height: 220px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); margin-bottom: var(--space-8); }
+  .grid-2-asym { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--space-6); margin-bottom: var(--space-8); }
+
+  /* =========================================================
+     STAT TILES UNDER HISTOGRAM
+     ========================================================= */
+  .stat-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+  }
+  .stat-tile { text-align: center; }
+  .stat-tile-value {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--brand);
+    line-height: 1;
+    margin-bottom: var(--space-1);
+  }
+  .stat-tile-label {
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--on-surface-muted);
+  }
+
+  /* =========================================================
+     INSIGHT BOX — quote-like callout for headline finding
+     ========================================================= */
+  .insight {
+    background: var(--brand);
+    color: #fff;
+    padding: var(--space-8) var(--space-10);
+    margin: var(--space-10) 0;
+    border-radius: var(--radius);
+    position: relative;
+    box-shadow: var(--shadow-elevated);
+  }
+  .insight::before {
+    content: '';
+    position: absolute;
+    left: 0; top: var(--space-8); bottom: var(--space-8);
+    width: 3px;
+    background: rgba(255,255,255,0.5);
+  }
+  .insight-label {
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: rgba(255,255,255,0.82);
+    margin-bottom: var(--space-3);
+  }
+  .insight-text {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+  .insight-text strong {
+    font-style: normal;
+    font-family: var(--font-headline);
+    font-weight: 600;
+    color: #fff;
+  }
+
+  /* =========================================================
+     SUBGROUP TABLE — stacked bars
+     ========================================================= */
+  .subgroup-section { margin-bottom: var(--space-10); }
+  .subgroup-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+  }
+  .subgroup-head h3 {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--brand);
+    letter-spacing: -0.01em;
+  }
+  .subgroup-head .note {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--on-surface-muted);
+  }
+
+  .subgroup-row {
+    display: grid;
+    grid-template-columns: 240px 70px 1fr 80px;
+    gap: var(--space-4);
+    align-items: center;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+  }
+  .subgroup-row:hover { background: var(--brand-06); }
+  .subgroup-row.header {
+    border-bottom: 1px solid var(--border-strong);
+    padding: var(--space-2) 0;
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--on-surface-muted);
+  }
+  .subgroup-row.header:hover { background: transparent; }
+  .group-name {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--on-surface);
+  }
+  .group-name .small-note {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    color: var(--on-surface-muted);
+    font-size: 0.8125rem;
+    font-weight: 400;
+  }
+  .group-total {
+    font-family: var(--font-headline);
+    font-size: 0.8125rem;
+    color: var(--on-surface-variant);
+    font-variant-numeric: tabular-nums;
+  }
+  .stacked-bar {
+    display: flex;
+    height: 30px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface-container);
+    box-shadow: inset 0 0 0 1px var(--border);
+  }
+  .stacked-seg {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-headline);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: #fff;
+    transition: filter var(--transition);
+    overflow: hidden;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+  .stacked-seg:hover { filter: brightness(1.08); cursor: pointer; }
+  .stacked-seg.above { background: var(--brand); }
+  .stacked-seg.near  { background: var(--brand-soft); color: var(--brand-deep); }
+  .stacked-seg.below { background: var(--on-surface); }
+  .group-avg {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.25rem;
+    text-align: right;
+    color: var(--on-surface);
+    font-variant-numeric: tabular-nums;
+  }
+  .group-avg.high { color: var(--brand); }
+  .group-avg.low  { color: var(--secondary); }
+
+  /* Legend / key */
+  .stack-key {
+    display: flex;
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+    padding: var(--space-4) var(--space-5);
+    background: var(--surface-container);
+    border-radius: var(--radius);
+    font-family: var(--font-label);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--on-surface-variant);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .stack-key .k {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .stack-key .swatch {
+    width: 18px; height: 18px; border-radius: 3px;
+  }
+  .stack-key .swatch.above { background: var(--brand); }
+  .stack-key .swatch.near  { background: var(--brand-soft); border: 1px solid var(--brand-deep); }
+  .stack-key .swatch.below { background: var(--on-surface); }
+
+  /* =========================================================
+     ACTIONS BLOCK
+     ========================================================= */
+  .actions {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-ghost);
+    margin-top: var(--space-10);
+    position: relative;
+    overflow: hidden;
+  }
+  .actions::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--brand);
+  }
+  .actions h3 {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--brand);
+    margin-bottom: var(--space-2);
+    letter-spacing: -0.01em;
+  }
+  .actions .sub {
+    font-size: 0.9375rem;
+    color: var(--on-surface-variant);
+    margin-bottom: var(--space-6);
+  }
+  .actions ol {
+    list-style: none;
+    counter-reset: action;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5) var(--space-8);
+  }
+  .actions li {
+    counter-increment: action;
+    padding-left: 48px;
+    position: relative;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--on-surface-variant);
+  }
+  .actions li::before {
+    content: counter(action, decimal-leading-zero);
+    position: absolute;
+    left: 0; top: -2px;
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--brand);
+    line-height: 1;
+  }
+  .actions li strong {
+    display: block;
+    margin-bottom: var(--space-1);
+    font-family: var(--font-headline);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--on-surface);
+  }
+  .actions li em {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    color: var(--brand);
+    font-weight: 400;
+  }
+
+  /* =========================================================
+     PERFORMANCE TAB — Item-level analysis
+     ========================================================= */
+  .item-section { margin-bottom: var(--space-10); }
+
+  /* Item table */
+  .item-table {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-ghost);
+    overflow: hidden;
+  }
+  .item-row {
+    display: grid;
+    grid-template-columns: 50px 100px 120px 1fr 80px 80px;
+    gap: var(--space-3);
+    align-items: center;
+    padding: var(--space-3) var(--space-5);
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+  }
+  .item-row:last-child { border-bottom: none; }
+  .item-row:hover { background: var(--brand-06); }
+  .item-row.header {
+    background: var(--surface-container);
+    border-bottom: 1px solid var(--border-strong);
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--on-surface-muted);
+    padding: var(--space-3) var(--space-5);
+  }
+  .item-row.header:hover { background: var(--surface-container); }
+
+  .item-num {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--brand);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .item-difficulty {
+    display: inline-block;
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    padding: 3px 8px;
+    border-radius: var(--radius);
+  }
+  .item-difficulty.easy {
+    background: rgba(16, 185, 129, 0.12);
+    color: #0f6e4f;
+  }
+  .item-difficulty.moderate {
+    background: var(--brand-08);
+    color: var(--brand-deep);
+  }
+  .item-difficulty.difficult {
+    background: rgba(26, 24, 22, 0.85);
+    color: #fff;
+  }
+  .item-standard {
+    font-family: 'Menlo', 'Consolas', monospace;
+    font-size: 0.75rem;
+    color: var(--on-surface-variant);
+    font-weight: 500;
+  }
+  .item-bar-wrap {
+    position: relative;
+    height: 26px;
+    background: var(--surface-container);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .item-bar-wrap.diverging {
+    display: flex;
+    background: transparent;
+    border: 1px solid var(--border);
+  }
+  .item-bar {
+    height: 100%;
+    transition: filter var(--transition);
+    display: flex;
+    align-items: center;
+    color: #fff;
+    font-family: var(--font-headline);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .item-bar-pass {
+    background: var(--brand);
+    justify-content: flex-end;
+    padding-right: var(--space-2);
+    border-right: 1px solid #fff;
+  }
+  .item-bar-fail {
+    background: var(--on-surface);
+    justify-content: flex-start;
+    padding-left: var(--space-2);
+    color: rgba(255, 255, 255, 0.92);
+  }
+  .item-row:hover .item-bar { filter: brightness(1.10); }
+  .item-pct {
+    text-align: right;
+    line-height: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .item-pct .pass-pct {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.375rem;
+    color: var(--on-surface);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .item-pct.fail .pass-pct {
+    color: var(--on-surface-variant);
+  }
+
+  /* Difficulty summary cards */
+  .difficulty-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+  .difficulty-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-ghost);
+    transition: all var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+  .difficulty-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .difficulty-card.easy::before { background: var(--color-success); }
+  .difficulty-card.moderate::before { background: var(--brand); }
+  .difficulty-card.difficult::before { background: var(--on-surface); }
+  .difficulty-card:hover {
+    box-shadow: var(--shadow-ghost-hover);
+    transform: translateY(-2px);
+  }
+  .difficulty-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-3);
+  }
+  .difficulty-card-head .label {
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--on-surface-muted);
+  }
+  .difficulty-card-head .count {
+    font-family: var(--font-headline);
+    font-size: 0.75rem;
+    color: var(--on-surface-muted);
+    font-weight: 500;
+  }
+  .difficulty-card .big-stat {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 2.25rem;
+    color: var(--on-surface);
+    line-height: 1;
+    margin-bottom: var(--space-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .difficulty-card.easy .big-stat { color: #0f6e4f; }
+  .difficulty-card.moderate .big-stat { color: var(--brand); }
+  .difficulty-card.difficult .big-stat { color: var(--on-surface); }
+  .difficulty-card .stat-sub {
+    font-size: 0.875rem;
+    color: var(--on-surface-variant);
+    line-height: 1.4;
+  }
+  .difficulty-card-explainer {
+    margin-top: var(--space-4);
+    padding-top: var(--space-3);
+    border-top: 1px dashed var(--border-strong);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--on-surface-variant);
+  }
+
+  /* Standard breakdown */
+  .standard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+    margin-bottom: var(--space-8);
+  }
+  .standard-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--brand);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-ghost);
+  }
+  .standard-card-code {
+    font-family: 'Menlo', 'Consolas', monospace;
+    font-size: 0.875rem;
+    color: var(--brand);
+    margin-bottom: var(--space-1);
+    font-weight: 600;
+  }
+  .standard-card h4 {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.25rem;
+    color: var(--on-surface);
+    line-height: 1.3;
+    margin-bottom: var(--space-3);
+    letter-spacing: -0.01em;
+  }
+  .standard-card-stats {
+    display: flex;
+    gap: var(--space-5);
+    margin-bottom: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px dashed var(--border-strong);
+  }
+  .standard-stat .v {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--brand);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .standard-stat .l {
+    font-family: var(--font-label);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--on-surface-muted);
+    margin-top: 4px;
+  }
+  .standard-card p {
+    font-size: 0.875rem;
+    color: var(--on-surface-variant);
+    line-height: 1.55;
+    margin-top: var(--space-3);
+  }
+  .standard-text { margin-bottom: var(--space-4); }
+  .standard-text-label {
+    font-family: var(--font-label);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--on-surface-muted);
+    margin-bottom: var(--space-2);
+  }
+  .standard-quote {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: 0.875rem;
+    color: var(--on-surface-variant);
+    line-height: 1.55;
+    padding-left: var(--space-3);
+    border-left: 2px solid var(--brand-15);
+    margin: 0;
+  }
+  .standard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .standard-list li {
+    position: relative;
+    padding-left: var(--space-4);
+    font-size: 0.875rem;
+    color: var(--on-surface-variant);
+    line-height: 1.5;
+    margin-bottom: var(--space-2);
+  }
+  .standard-list li:last-child { margin-bottom: 0; }
+  .standard-list li::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 8px;
+    width: 4px;
+    height: 4px;
+    background: var(--brand);
+    border-radius: 50%;
+  }
+
+  /* Item legend */
+  .item-legend {
+    display: flex;
+    gap: var(--space-5);
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface-container);
+    border-radius: var(--radius);
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--on-surface-variant);
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .item-legend .k { display: flex; align-items: center; gap: var(--space-2); }
+  .item-legend .swatch { width: 14px; height: 14px; border-radius: 2px; }
+
+  @media (max-width: 900px) {
+    .difficulty-grid { grid-template-columns: 1fr; }
+    .standard-grid { grid-template-columns: 1fr; }
+    .item-row { grid-template-columns: 50px 1fr 60px 60px; row-gap: 6px; padding: var(--space-3); }
+    .item-row > .item-standard, .item-row > .item-bar-wrap { grid-column: 1 / -1; }
+    .item-row.header { display: none; }
+  }
+
+  /* =========================================================
+     POPULATION GRAPHIC — Tab 3 top section
+     ========================================================= */
+  .pop-section {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-ghost);
+    margin-bottom: var(--space-8);
+  }
+  .pop-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8) var(--space-10);
+  }
+  .pop-cat {
+    min-width: 0;
+  }
+  .pop-cat-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .pop-cat-title {
+    font-family: var(--font-label);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--brand);
+  }
+  .pop-cat-total {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-size: 0.875rem;
+    color: var(--on-surface-muted);
+  }
+  .pop-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 70px;
+    gap: var(--space-3);
+    align-items: center;
+    padding: 6px 0;
+    font-size: 0.8125rem;
+  }
+  .pop-row-name {
+    font-family: var(--font-body);
+    color: var(--on-surface);
+    font-weight: 500;
+    font-size: 0.8125rem;
+    line-height: 1.25;
+  }
+  .pop-row-bar-wrap {
+    height: 14px;
+    background: var(--surface-container);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pop-row-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--brand-deep), var(--brand));
+    border-radius: 2px;
+    transition: filter var(--transition);
+  }
+  .pop-row:hover .pop-row-bar { filter: brightness(1.12); }
+  .pop-row-count {
+    font-family: var(--font-headline);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    color: var(--on-surface);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .pop-row-count .pct {
+    color: var(--on-surface-muted);
+    font-weight: 500;
+    font-size: 0.6875rem;
+    margin-left: 4px;
+  }
+  .pop-cat--small .pop-row-name { font-size: 0.75rem; }
+
+  @media (max-width: 900px) {
+    .pop-grid { grid-template-columns: 1fr; }
+  }
+
+  /* =========================================================
+     PERFORMANCE PATTERNS — Tab 3
+     ========================================================= */
+  .pattern-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+  .pattern-col {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-ghost);
+    position: relative;
+    overflow: hidden;
+  }
+  .pattern-col::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .pattern-col.thriving::before { background: var(--brand); }
+  .pattern-col.struggling::before { background: var(--on-surface); }
+
+  .pattern-col-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+  }
+  .pattern-col-mark {
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: var(--radius);
+  }
+  .thriving .pattern-col-mark { background: var(--brand); color: #fff; }
+  .struggling .pattern-col-mark { background: var(--on-surface); color: #fff; }
+
+  .pattern-col h3 {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--brand);
+    letter-spacing: -0.01em;
+  }
+  .struggling h3 { color: var(--on-surface); }
+
+  .pattern-deck {
+    font-size: 0.9375rem;
+    color: var(--on-surface-variant);
+    margin-bottom: var(--space-5);
+    line-height: 1.55;
+  }
+
+  .profile-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    margin-bottom: var(--space-3);
+    transition: all var(--transition);
+    background: var(--surface);
+  }
+  .profile-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-ghost);
+  }
+  .profile-card:last-child { margin-bottom: 0; }
+  .profile-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-2);
+    gap: var(--space-3);
+  }
+  .profile-cat {
+    font-family: var(--font-label);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--on-surface-muted);
+    margin-bottom: 4px;
+  }
+  .profile-name {
+    font-family: var(--font-headline);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--on-surface);
+    line-height: 1.3;
+  }
+  .profile-score {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .thriving .profile-score { color: var(--brand); }
+  .struggling .profile-score { color: var(--on-surface); }
+
+  .profile-meta {
+    display: flex;
+    gap: var(--space-4);
+    font-family: var(--font-label);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--on-surface-muted);
+  }
+  .profile-meta strong {
+    color: var(--on-surface-variant);
+    font-weight: 600;
+  }
+  .thriving .profile-meta .above-pct strong { color: var(--brand); }
+  .struggling .profile-meta .below-pct strong { color: var(--on-surface); }
+
+  /* Mini progress strip */
+  .profile-strip {
+    display: flex;
+    height: 6px;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: var(--space-3);
+    background: var(--surface-container);
+  }
+  .profile-strip .seg-above { background: var(--brand); }
+  .profile-strip .seg-near  { background: var(--brand-soft); }
+  .profile-strip .seg-below { background: var(--on-surface); }
+
+  /* Recommendation cards */
+  .rec-section {
+    margin-top: var(--space-10);
+  }
+  .rec-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5);
+    margin-top: var(--space-6);
+  }
+  .rec-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--brand);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-ghost);
+    transition: all var(--transition);
+  }
+  .rec-card:hover {
+    box-shadow: var(--shadow-ghost-hover);
+    transform: translateY(-2px);
+  }
+  .rec-card-num {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1rem;
+    color: var(--brand);
+    letter-spacing: 0.02em;
+    margin-bottom: var(--space-2);
+  }
+  .rec-card-target {
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--on-surface-muted);
+    margin-bottom: var(--space-2);
+  }
+  .rec-card h4 {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.25rem;
+    color: var(--on-surface);
+    line-height: 1.3;
+    margin-bottom: var(--space-3);
+    letter-spacing: -0.01em;
+  }
+  .rec-card p {
+    font-size: 0.9375rem;
+    color: var(--on-surface-variant);
+    line-height: 1.55;
+    margin-bottom: var(--space-3);
+  }
+  .rec-card p:last-child { margin-bottom: 0; }
+  .rec-card .rec-action {
+    display: block;
+    font-family: var(--font-headline);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    color: var(--brand);
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px dashed var(--border-strong);
+  }
+  .rec-card .rec-action::before {
+    content: 'Try this → ';
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--on-surface-muted);
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    .pattern-grid, .rec-grid { grid-template-columns: 1fr; }
+  }
+
+  /* =========================================================
+     COLOPHON
+     ========================================================= */
+  .colophon {
+    margin-top: var(--space-12);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-label);
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--on-surface-muted);
+  }
+
+  /* =========================================================
+     RESPONSIVE
+     ========================================================= */
+  @media (max-width: 900px) {
+    .page { padding: var(--space-4); }
+    .top-nav { padding: var(--space-4); }
+    .grid-2, .grid-2-asym { grid-template-columns: 1fr; }
+    .subgroup-row { grid-template-columns: 1fr; gap: var(--space-2); }
+    .subgroup-row.header { display: none; }
+    .actions ol { grid-template-columns: 1fr; }
+    .stat-tiles { grid-template-columns: repeat(2, 1fr); }
+    .hero-header h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="top-nav-left">
+    <div class="nav-mark">WHS</div>
+    <div>
+      <div class="nav-title">Westbrook High School</div>
+      <div class="nav-meta">Faculty Dashboard · IAB · 2025–26</div>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- HERO HEADER -->
+  <header class="hero-header">
+    <div class="section-label">Interim Assessment Block · ELA · Spring 2026</div>
+    <h1>High School ELA · Research: <span class="accent">Evaluate Information &amp; Sources</span> (FIAB) Results</h1>
+    <p class="hero-deck">A look at how 888 ninth- and tenth-graders performed on this IAB during the Spring 2026 administration — with the patterns most likely to inform your next instructional moves.</p>
+  </header>
+
+  <!-- TABS -->
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-panel="overview" role="tab">
+      <span class="tab-num">01</span>Overview
+    </button>
+    <button class="tab" data-panel="performance" role="tab">
+      <span class="tab-num">02</span>Performance
+    </button>
+    <button class="tab" data-panel="subgroups" role="tab">
+      <span class="tab-num">03</span>Subgroup Breakdown
+    </button>
+    <button class="tab" data-panel="patterns" role="tab">
+      <span class="tab-num">04</span>Performance Patterns &amp; Next Steps
+    </button>
+  </nav>
+
+  <!-- ============ PANEL 1: OVERVIEW ============ -->
+  <section class="panel active" id="overview">
+
+    <div class="section-label">Section One · The Big Picture</div>
+    <h2 class="section-title">How did Westbrook High perform overall?</h2>
+    <p class="section-deck">A snapshot of all students who completed the IAB. Use these numbers to set baseline expectations before drilling into specific groups of learners.</p>
+
+    <!-- KPI GRID -->
+    <div class="kpi-grid" id="kpiGrid"></div>
+
+    <!-- DISTRIBUTION + HISTOGRAM -->
+    <div class="grid-2-asym">
+      <div class="chart-container">
+        <div class="chart-title">Performance Distribution · Three Categories</div>
+        <div class="chart-canvas"><canvas id="donutChart"></canvas></div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">Scale Score Distribution · 50-pt bins</div>
+        <div class="chart-canvas"><canvas id="histogramChart"></canvas></div>
+        <div class="stat-tiles">
+          <div class="stat-tile"><div class="stat-tile-value" id="statMin">–</div><div class="stat-tile-label">Min</div></div>
+          <div class="stat-tile"><div class="stat-tile-value" id="statMed">–</div><div class="stat-tile-label">Median</div></div>
+          <div class="stat-tile"><div class="stat-tile-value" id="statMean">–</div><div class="stat-tile-label">Mean</div></div>
+          <div class="stat-tile"><div class="stat-tile-value" id="statMax">–</div><div class="stat-tile-label">Max</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEADLINE INSIGHT -->
+    <div class="insight">
+      <div class="insight-label">Headline Finding</div>
+      <div class="insight-text">
+        About <strong>1 in 3 students reached Above Standard</strong>, while roughly 1 in 4 sit Below Standard. The largest band — <strong>43% of students</strong> — sits right at the edge of proficiency. This is the cohort most likely to respond to focused instruction in source evaluation.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ PANEL 2: PERFORMANCE (item-level) ============ -->
+  <section class="panel" id="performance">
+
+    <div class="section-label">Section Two · Item-Level Analysis</div>
+    <h2 class="section-title">Where did students struggle on the test itself?</h2>
+    <p class="section-deck">Looking inside the assessment: 10 items, all aligned to the <em>Research and Inquiry</em> claim. Item-level data shows you which specific tasks students mastered and which ones tripped them up — pointing to the exact skills your instruction should target next.</p>
+
+    <!-- DIFFICULTY SUMMARY CARDS -->
+    <div class="difficulty-grid" id="difficultyGrid"></div>
+
+    <!-- ITEM-BY-ITEM COMBINED TABLE -->
+    <div class="item-section">
+      <div class="subgroup-head">
+        <h3>Item-by-item performance</h3>
+        <div class="note">Items in test order · passing and failing rates side by side</div>
+      </div>
+
+      <div class="item-legend">
+        <div class="k" style="margin-right: var(--space-3); color: var(--on-surface);">Each bar splits at the boundary between passed (left, brand red) and failed (right, dark)</div>
+        <div class="k"><div class="swatch" style="background: var(--brand);"></div>% Passed (Full Credit)</div>
+        <div class="k"><div class="swatch" style="background: var(--on-surface);"></div>% Failed (Zero Credit)</div>
+      </div>
+
+      <div class="item-table">
+        <div class="item-row header">
+          <div>Item</div>
+          <div>Difficulty</div>
+          <div>Standard</div>
+          <div>Passing &amp; Failing Distribution</div>
+          <div>% Passed</div>
+          <div style="text-align: right">% Failed</div>
+        </div>
+        <div id="itemRowsCombined"></div>
+      </div>
+    </div>
+
+    <!-- BY STANDARD -->
+    <div class="item-section">
+      <div class="subgroup-head">
+        <h3>Performance by Standard</h3>
+        <div class="note">Two writing standards are tested across the 10 items</div>
+      </div>
+
+      <div class="standard-grid">
+        <div class="standard-card">
+          <div class="standard-card-code">CCSS.ELA-LITERACY.WHST.11-12.8</div>
+          <h4>Writing Standards for Literacy in History/Social Studies, Science, and Technical Subjects · Grades 11–12</h4>
+          <div class="standard-text">
+            <div class="standard-text-label">Verbatim text of the standard</div>
+            <p class="standard-quote">"Gather relevant information from multiple authoritative print and digital sources, using advanced searches effectively; assess the strengths and limitations of each source in terms of the specific task, purpose, and audience; integrate information into the text selectively to maintain the flow of ideas, avoiding plagiarism and overreliance on any one source and following a standard format for citation."</p>
+          </div>
+          <div class="standard-text">
+            <div class="standard-text-label">What students should be able to demonstrate</div>
+            <ul class="standard-list">
+              <li>Locate authoritative print and digital sources within a discipline (history, science, or technical subject) using advanced search strategies</li>
+              <li>Judge each source's strengths and limitations against the <em>specific task, purpose, and audience</em> of the discipline</li>
+              <li>Integrate evidence selectively into discipline-specific writing without disrupting the flow of ideas</li>
+              <li>Avoid plagiarism and over-reliance on any single source; cite using a standard format</li>
+            </ul>
+          </div>
+          <div class="standard-card-stats">
+            <div class="standard-stat"><div class="v" id="whst8Pct">–</div><div class="l">Avg Full Credit</div></div>
+            <div class="standard-stat"><div class="v" id="whst8Items">–</div><div class="l">Items</div></div>
+            <div class="standard-stat"><div class="v" id="whst8Range">–</div><div class="l">Range</div></div>
+          </div>
+          <p>The bulk of this assessment (7 of 10 items) targets the writing-in-history/social-studies version of source evaluation. Performance is wide-ranging: the most-difficult item on the entire test (Item 9, 5%) lives here, but so do four of the strongest items.</p>
+        </div>
+
+        <div class="standard-card">
+          <div class="standard-card-code">CCSS.ELA-LITERACY.W.11-12.8</div>
+          <h4>Writing Standards · Research to Build and Present Knowledge · Grades 11–12</h4>
+          <div class="standard-text">
+            <div class="standard-text-label">Verbatim text of the standard</div>
+            <p class="standard-quote">"Gather relevant information from multiple authoritative print and digital sources, using advanced searches effectively; assess the strengths and limitations of each source in terms of the task, purpose, and audience; integrate information into the text selectively to maintain the flow of ideas, avoiding plagiarism and overreliance on any one source and following a standard format for citation."</p>
+          </div>
+          <div class="standard-text">
+            <div class="standard-text-label">What students should be able to demonstrate</div>
+            <ul class="standard-list">
+              <li>Use advanced search techniques to locate authoritative sources for a research question in the ELA classroom</li>
+              <li>Assess each source's strengths and limitations relative to the <em>task, purpose, and audience</em> of the writing</li>
+              <li>Integrate information from multiple sources selectively, maintaining the flow of ideas in their own writing</li>
+              <li>Avoid plagiarism and over-reliance on any single source; cite using a standard format</li>
+            </ul>
+          </div>
+          <div class="standard-card-stats">
+            <div class="standard-stat"><div class="v" id="w8Pct">–</div><div class="l">Avg Full Credit</div></div>
+            <div class="standard-stat"><div class="v" id="w8Items">–</div><div class="l">Items</div></div>
+            <div class="standard-stat"><div class="v" id="w8Range">–</div><div class="l">Range</div></div>
+          </div>
+          <p>Three items target the general-writing standard. Average performance is similar to WHST.8, but the spread is troubling: the easiest item on the test (Item 8, 73%) is here, alongside two underperforming "Moderate" items (#6 and #10) — students aren't transferring source-evaluation skills consistently across writing contexts.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAKEAWAYS -->
+    <div class="actions">
+      <h3>What the item analysis tells us</h3>
+      <p class="sub">Two patterns emerge from looking inside the test.</p>
+      <ol>
+        <li><strong>Item 9 demands urgent attention</strong>A 5% full-credit rate on any item is a flag. Whatever skill this item assesses, the entire student body — across all subgroups — failed to demonstrate it.</li>
+        <li><strong>Two "Moderate" items underperformed</strong>Items 6 and 10 (both W.8) scored 34% and 39% — well below the typical Moderate range. The pattern points to a specific gap in <em>gathering and assessing source strengths</em>, distinct from integrating sources into writing.</li>
+      </ol>
+    </div>
+
+  </section>
+
+  <!-- ============ PANEL 3: SUBGROUPS ============ -->
+  <section class="panel" id="subgroups">
+
+    <!-- POPULATION GRAPHIC -->
+    <div class="pop-section">
+      <div class="pop-cat-head" style="margin-bottom: var(--space-5); padding-bottom: var(--space-3); border-bottom: 1px solid var(--border-strong);">
+        <div>
+          <div class="section-label" style="margin-bottom: 4px;">Subgroup Populations</div>
+          <h3 style="font-family: var(--font-editorial); font-style: italic; font-weight: 400; font-size: 1.5rem; color: var(--brand); letter-spacing: -0.01em;">How many students are in each group?</h3>
+        </div>
+        <div class="pop-cat-total" style="font-size: 1rem;">Total enrollment in IAB · <strong style="font-family: var(--font-headline); color: var(--brand); font-style: normal;">888 students</strong></div>
+      </div>
+      <div class="pop-grid" id="popGrid"></div>
+    </div>
+
+    <!-- KEY for stacked bars below -->
+    <div class="stack-key">
+      <div class="k"><div class="swatch above"></div>Above Standard</div>
+      <div class="k"><div class="swatch near"></div>Near Standard</div>
+      <div class="k"><div class="swatch below"></div>Below Standard</div>
+      <div class="k" style="margin-left:auto; color: var(--on-surface-muted)">Avg = mean scale score</div>
+    </div>
+
+    <!-- BY GRADE -->
+    <div class="subgroup-section">
+      <div class="subgroup-head">
+        <h3>By Grade Level</h3>
+        <div class="note">Comparing 9th and 10th graders</div>
+      </div>
+      <div class="subgroup-row header">
+        <div>Grade</div><div>N</div><div>Performance Distribution</div><div style="text-align:right">Avg</div>
+      </div>
+      <div id="gradeRows"></div>
+    </div>
+
+    <!-- BY ELA STATUS -->
+    <div class="subgroup-section">
+      <div class="subgroup-head">
+        <h3>By English Language Acquisition Status</h3>
+        <div class="note">Where the largest performance gap appears</div>
+      </div>
+      <div class="subgroup-row header">
+        <div>Status</div><div>N</div><div>Performance Distribution</div><div style="text-align:right">Avg</div>
+      </div>
+      <div id="elaRows"></div>
+    </div>
+
+    <!-- BY RACE / ETHNICITY -->
+    <div class="subgroup-section">
+      <div class="subgroup-head">
+        <h3>By Race &amp; Ethnicity</h3>
+        <div class="note">Sorted by group size; very small groups noted</div>
+      </div>
+      <div class="subgroup-row header">
+        <div>Group</div><div>N</div><div>Performance Distribution</div><div style="text-align:right">Avg</div>
+      </div>
+      <div id="raceRows"></div>
+    </div>
+
+    <!-- BY LANGUAGE -->
+    <div class="subgroup-section">
+      <div class="subgroup-head">
+        <h3>By Home Language <span style="font-style:italic; color: var(--on-surface-muted); font-weight: 400; font-size: 0.9rem"> · top 8 non-English</span></h3>
+        <div class="note">Reflects multilingual learners' performance</div>
+      </div>
+      <div class="subgroup-row header">
+        <div>Language</div><div>N</div><div>Performance Distribution</div><div style="text-align:right">Avg</div>
+      </div>
+      <div id="langRows"></div>
+    </div>
+
+  </section>
+
+  <!-- ============ PANEL 3: PERFORMANCE PATTERNS & NEXT STEPS ============ -->
+  <section class="panel" id="patterns">
+
+    <div class="section-label">Section Four · Patterns &amp; Practice</div>
+    <h2 class="section-title">Who's thriving, who's struggling, &amp; what to do next</h2>
+
+    <!-- TWO-COLUMN: THRIVING vs STRUGGLING -->
+    <div class="pattern-grid">
+
+      <div class="pattern-col thriving">
+        <div class="pattern-col-head">
+          <span class="pattern-col-mark">Thriving</span>
+        </div>
+        <div id="topSubgroups"></div>
+      </div>
+
+      <div class="pattern-col struggling">
+        <div class="pattern-col-head">
+          <span class="pattern-col-mark">Need Support</span>
+        </div>
+        <div id="bottomSubgroups"></div>
+      </div>
+
+    </div>
+
+    <!-- INSIGHT -->
+    <div class="insight">
+      <div class="insight-label">What the data reveals</div>
+      <div class="insight-text">
+        The single largest performance gap on this IAB belongs to <strong>active English Learners</strong> (n=95, avg 2475) — sitting 100+ points below most other subgroups. Yet <strong>Reclassified Fluent EP students</strong> (n=300, avg 2623) outperform their English-Only peers. The pathway out of EL status is working; <strong>the support during EL status</strong> is where instructional design needs to focus.
+      </div>
+    </div>
+
+  </section>
+
+  <footer class="colophon">
+    <div>Westbrook High · Faculty Briefing</div>
+    <div>IAB · ELA · 2025–26</div>
+  </footer>
+
+</div>
+
+<script>
+const DATA = {"meta":{"school":"Antelope High","year":"2025-26","assessment":"High School ELA - Research: Evaluate Information and Sources (FIAB)","subject":"ELA","totalStudents":888,"avgScore":2595.6,"minScore":2300,"maxScore":2900,"medianScore":2600},"overall":{"Above Standard":303,"Near Standard":381,"Below Standard":204},"byGrade":{"G10":{"Above Standard":154,"Near Standard":189,"Below Standard":105,"avgScore":2596,"total":448},"G9":{"Above Standard":149,"Near Standard":192,"Below Standard":99,"avgScore":2595,"total":440}},"byELA":{"English Only":{"Above Standard":162,"Near Standard":190,"Below Standard":102,"avgScore":2599,"total":454},"Initial Fluent English Proficient":{"Above Standard":18,"Near Standard":13,"Below Standard":8,"avgScore":2631,"total":39},"Reclassified Fluent English Proficient":{"Above Standard":118,"Near Standard":141,"Below Standard":41,"avgScore":2623,"total":300},"English Learner":{"Above Standard":5,"Near Standard":37,"Below Standard":53,"avgScore":2475,"total":95}},"byRace":{"Two or More Races":{"Above Standard":30,"Near Standard":37,"Below Standard":17,"avgScore":2600,"total":84},"Black or African American":{"Above Standard":21,"Near Standard":35,"Below Standard":16,"avgScore":2589,"total":72},"White":{"Above Standard":116,"Near Standard":134,"Below Standard":78,"avgScore":2602,"total":328},"Asian":{"Above Standard":51,"Near Standard":55,"Below Standard":32,"avgScore":2605,"total":138},"Hispanic or Latino":{"Above Standard":65,"Near Standard":98,"Below Standard":46,"avgScore":2578,"total":209},"Filipino":{"Above Standard":9,"Near Standard":8,"Below Standard":3,"avgScore":2635,"total":20},"Not Reported":{"Above Standard":11,"Near Standard":12,"Below Standard":8,"avgScore":2606,"total":31},"Native Hawaiian/Pacific Islander":{"Above Standard":0,"Near Standard":2,"Below Standard":3,"avgScore":2475,"total":5},"American Indian/Alaska Native":{"Above Standard":0,"Near Standard":0,"Below Standard":1,"avgScore":2300,"total":1}},"byLanguage":{"Russian":{"Above Standard":39,"Near Standard":44,"Below Standard":17,"avgScore":2615,"total":100},"Spanish; Castilian":{"Above Standard":28,"Near Standard":41,"Below Standard":16,"avgScore":2598,"total":85},"Ukrainian":{"Above Standard":12,"Near Standard":32,"Below Standard":21,"avgScore":2551,"total":65},"Panjabi; Punjabi":{"Above Standard":20,"Near Standard":14,"Below Standard":10,"avgScore":2599,"total":44},"Persian (Farsi)":{"Above Standard":5,"Near Standard":12,"Below Standard":5,"avgScore":2559,"total":22},"Vietnamese":{"Above Standard":10,"Near Standard":4,"Below Standard":3,"avgScore":2682,"total":17},"Uncoded languages (Other non-English languages)":{"Above Standard":6,"Near Standard":5,"Below Standard":5,"avgScore":2590,"total":16},"Arabic":{"Above Standard":3,"Near Standard":7,"Below Standard":4,"avgScore":2574,"total":14}},"scoreDistribution":[{"range":"2299-2350","count":43,"mid":2324},{"range":"2350-2400","count":34,"mid":2375},{"range":"2400-2450","count":62,"mid":2425},{"range":"2450-2500","count":83,"mid":2475},{"range":"2500-2550","count":96,"mid":2525},{"range":"2550-2600","count":128,"mid":2575},{"range":"2600-2650","count":129,"mid":2625},{"range":"2650-2700","count":115,"mid":2675},{"range":"2700-2750","count":117,"mid":2725},{"range":"2750-2800","count":13,"mid":2775},{"range":"2800-2850","count":46,"mid":2825},{"range":"2850-2900","count":22,"mid":2875}],"topSubgroups":[{"category":"Race/Ethnicity","subgroup":"Filipino","n":20,"avg":2635,"above":9,"near":8,"below":3,"above_pct":45.0,"below_pct":15.0,"near_pct":40.0},{"category":"ELA Status","subgroup":"Initial Fluent English Proficient","n":39,"avg":2631,"above":18,"near":13,"below":8,"above_pct":46.2,"below_pct":20.5,"near_pct":33.3},{"category":"ELA Status","subgroup":"Reclassified Fluent English Proficient","n":300,"avg":2623,"above":118,"near":141,"below":41,"above_pct":39.3,"below_pct":13.7,"near_pct":47.0}],"bottomSubgroups":[{"category":"ELA Status","subgroup":"English Learner","n":95,"avg":2475,"above":5,"near":37,"below":53,"above_pct":5.3,"below_pct":55.8,"near_pct":38.9},{"category":"Race/Ethnicity","subgroup":"Hispanic or Latino","n":209,"avg":2578,"above":65,"near":98,"below":46,"above_pct":31.1,"below_pct":22.0,"near_pct":46.9},{"category":"ELA Status","subgroup":"English Only","n":454,"avg":2599,"above":162,"near":190,"below":102,"above_pct":35.7,"below_pct":22.5,"near_pct":41.9}],"populations":{"Grade":[{"name":"Grade 10","n":448},{"name":"Grade 9","n":440}],"ELA Status":[{"name":"English Only","n":454},{"name":"Reclassified Fluent English Proficient","n":300},{"name":"English Learner","n":95},{"name":"Initial Fluent English Proficient","n":39}],"Race/Ethnicity":[{"name":"White","n":328},{"name":"Hispanic or Latino","n":209},{"name":"Asian","n":138},{"name":"Two or More Races","n":84},{"name":"Black or African American","n":72},{"name":"Not Reported","n":31},{"name":"Filipino","n":20},{"name":"Native Hawaiian/Pacific Islander","n":5},{"name":"American Indian/Alaska Native","n":1}],"Home Language":[{"name":"Russian","n":100},{"name":"Spanish; Castilian","n":85},{"name":"Ukrainian","n":65},{"name":"Panjabi; Punjabi","n":44},{"name":"Persian (Farsi)","n":22},{"name":"Vietnamese","n":17},{"name":"Uncoded languages (Other non-English languages)","n":16},{"name":"Arabic","n":14}]},"items":[{"item":1,"difficulty":"Moderate","standard":"11-12.WHST.8","full_credit":57,"zero_credit":43},{"item":2,"difficulty":"Moderate","standard":"11-12.WHST.8","full_credit":66,"zero_credit":34},{"item":3,"difficulty":"Moderate","standard":"11-12.WHST.8","full_credit":58,"zero_credit":42},{"item":4,"difficulty":"Moderate","standard":"11-12.WHST.8","full_credit":63,"zero_credit":37},{"item":5,"difficulty":"Difficult","standard":"11-12.WHST.8","full_credit":31,"zero_credit":69},{"item":6,"difficulty":"Moderate","standard":"11-12.W.8","full_credit":34,"zero_credit":66},{"item":7,"difficulty":"Moderate","standard":"11-12.WHST.8","full_credit":64,"zero_credit":36},{"item":8,"difficulty":"Easy","standard":"11-12.W.8","full_credit":73,"zero_credit":27},{"item":9,"difficulty":"Difficult","standard":"11-12.WHST.8","full_credit":5,"zero_credit":95},{"item":10,"difficulty":"Moderate","standard":"11-12.W.8","full_credit":39,"zero_credit":61}],"itemSummary":{"meanPct":49,"medianPct":57.5,"totalItems":10,"masteredCount":4,"developingCount":2,"strugglingCount":3,"criticalCount":1},"itemByDifficulty":{"Easy":{"count":1,"avgPct":73.0,"minPct":73,"maxPct":73,"items":[8]},"Moderate":{"count":7,"avgPct":54.4,"minPct":34,"maxPct":66,"items":[1,2,3,4,6,7,10]},"Difficult":{"count":2,"avgPct":18.0,"minPct":5,"maxPct":31,"items":[5,9]}},"itemByStandard":{"11-12.WHST.8":{"count":7,"avgPct":49.1,"minPct":5,"maxPct":66},"11-12.W.8":{"count":3,"avgPct":48.7,"minPct":34,"maxPct":73}}};
+
+// Chart.js global defaults — Anyra look
+Chart.defaults.font.family = 'Inter, sans-serif';
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#3a3632';
+Chart.defaults.borderColor = 'rgba(177, 18, 38, 0.08)';
+
+// Color tokens accessible from JS
+const COL = {
+  brand: '#B11226',
+  brandDeep: '#7A0A18',
+  brandSoft: '#F4D6DA',
+  ink: '#1a1816',
+  muted: 'rgba(58, 54, 50, 0.55)',
+  border: 'rgba(177, 18, 38, 0.08)'
+};
+
+// =========================================================
+// TAB SWITCHING
+// =========================================================
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.panel).classList.add('active');
+  });
+});
+
+// =========================================================
+// KPI GRID
+// =========================================================
+const total = DATA.meta.totalStudents;
+const above = DATA.overall['Above Standard'];
+const near = DATA.overall['Near Standard'];
+const below = DATA.overall['Below Standard'];
+const abovePct = ((above / total) * 100).toFixed(1);
+
+document.getElementById('kpiGrid').innerHTML = `
+  <div class="kpi-card highlight">
+    <div class="kpi-title">Students Assessed</div>
+    <div class="kpi-value">${total.toLocaleString()}</div>
+    <div class="kpi-subtitle">across grades 9 &amp; 10</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-title">Above Standard</div>
+    <div class="kpi-value">${abovePct}<span class="unit-sm">%</span></div>
+    <div class="kpi-subtitle">${above} students</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-title">Mean Scale Score</div>
+    <div class="kpi-value">${Math.round(DATA.meta.avgScore)}</div>
+    <div class="kpi-subtitle">median ${DATA.meta.medianScore}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-title">Score Range</div>
+    <div class="kpi-value" style="font-size: 1.875rem">${DATA.meta.minScore}<span class="unit-sm" style="font-size: 1.25rem; padding: 0 6px;">–</span>${DATA.meta.maxScore}</div>
+    <div class="kpi-subtitle">600-point spread</div>
+  </div>
+`;
+
+// =========================================================
+// DONUT CHART
+// =========================================================
+
+// Custom plugin: draw percentage labels directly on each donut slice
+const donutLabelsPlugin = {
+  id: 'donutLabels',
+  afterDatasetsDraw(chart) {
+    const { ctx, chartArea } = chart;
+    const meta = chart.getDatasetMeta(0);
+    const data = chart.data.datasets[0].data;
+    const totalSum = data.reduce((a, b) => a + b, 0);
+
+    meta.data.forEach((arc, i) => {
+      const val = data[i];
+      const pct = (val / totalSum) * 100;
+      // Skip tiny slices to avoid label collision
+      if (pct < 4) return;
+
+      // Midpoint of the arc, between inner and outer radius
+      const angle = (arc.startAngle + arc.endAngle) / 2;
+      const radius = (arc.innerRadius + arc.outerRadius) / 2;
+      const x = arc.x + Math.cos(angle) * radius;
+      const y = arc.y + Math.sin(angle) * radius;
+
+      // Pick text color based on slice background — light text on dark, dark on light
+      const bg = chart.data.datasets[0].backgroundColor[i];
+      const isLight = bg === '#F4D6DA';   // brandSoft is the only light slice
+      ctx.save();
+      ctx.fillStyle = isLight ? '#7A0A18' : '#FFFFFF';
+      ctx.font = "600 15px 'Montserrat', sans-serif";
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`${pct.toFixed(1)}%`, x, y);
+      ctx.restore();
+    });
+  }
+};
+
+new Chart(document.getElementById('donutChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Above Standard', 'Near Standard', 'Below Standard'],
+    datasets: [{
+      data: [above, near, below],
+      backgroundColor: [COL.brand, COL.brandSoft, COL.ink],
+      borderColor: '#FEFDFB',
+      borderWidth: 3,
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '58%',
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          padding: 18,
+          font: { size: 12, family: 'Inter' },
+          color: '#3a3632',
+          generateLabels: (chart) => {
+            const data = chart.data;
+            return data.labels.map((label, i) => {
+              const val = data.datasets[0].data[i];
+              const pct = ((val/total)*100).toFixed(1);
+              return {
+                text: `${label}  ·  ${val} (${pct}%)`,
+                fillStyle: data.datasets[0].backgroundColor[i],
+                strokeStyle: data.datasets[0].backgroundColor[i],
+                lineWidth: 0,
+                hidden: false,
+                index: i
+              };
+            });
+          }
+        }
+      },
+      tooltip: {
+        backgroundColor: COL.ink,
+        titleFont: { family: 'Montserrat', size: 11, weight: 600 },
+        bodyFont: { family: 'Inter', size: 13 },
+        padding: 12,
+        callbacks: {
+          label: (ctx) => `${ctx.parsed} students (${((ctx.parsed/total)*100).toFixed(1)}%)`
+        }
+      }
+    }
+  },
+  plugins: [donutLabelsPlugin]
+});
+
+// =========================================================
+// HISTOGRAM CHART
+// =========================================================
+const dist = DATA.scoreDistribution;
+new Chart(document.getElementById('histogramChart'), {
+  type: 'bar',
+  data: {
+    labels: dist.map(d => d.mid),
+    datasets: [{
+      data: dist.map(d => d.count),
+      backgroundColor: COL.brand,
+      hoverBackgroundColor: COL.brandDeep,
+      borderRadius: 2,
+      borderSkipped: false,
+      barPercentage: 0.92,
+      categoryPercentage: 0.96
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: COL.ink,
+        titleFont: { family: 'Montserrat', size: 11, weight: 600 },
+        bodyFont: { family: 'Inter', size: 13 },
+        padding: 12,
+        callbacks: {
+          title: (items) => `Score range: ${dist[items[0].dataIndex].range}`,
+          label: (ctx) => `${ctx.parsed.y} students`
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: { display: true, text: 'Scale Score (bin midpoint)', color: COL.muted, font: { family: 'Montserrat', size: 10, weight: 600 } },
+        grid: { display: false },
+        ticks: { color: COL.muted, font: { family: 'Inter', size: 11 } }
+      },
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: 'Students', color: COL.muted, font: { family: 'Montserrat', size: 10, weight: 600 } },
+        grid: { color: COL.border, drawBorder: false },
+        ticks: { color: COL.muted, font: { family: 'Inter', size: 11 }, precision: 0 }
+      }
+    }
+  }
+});
+
+document.getElementById('statMin').textContent = DATA.meta.minScore;
+document.getElementById('statMed').textContent = DATA.meta.medianScore;
+document.getElementById('statMean').textContent = Math.round(DATA.meta.avgScore);
+document.getElementById('statMax').textContent = DATA.meta.maxScore;
+
+// =========================================================
+// SUBGROUP ROW BUILDER
+// =========================================================
+function makeRow(name, group, displayNameOverride) {
+  const t = group.total;
+  const a = group['Above Standard'];
+  const n = group['Near Standard'];
+  const b = group['Below Standard'];
+  const aPct = (a/t)*100;
+  const nPct = (n/t)*100;
+  const bPct = (b/t)*100;
+  const avg = group.avgScore;
+  const avgClass = avg >= 2620 ? 'high' : (avg < 2550 ? 'low' : '');
+
+  // Show count + percentage if segment is wide enough; smaller segments show just count or nothing
+  const segText = (pct, val) => {
+    if (pct >= 14) return `${val} · ${pct.toFixed(0)}%`;
+    if (pct >= 7)  return `${val}`;
+    return '';
+  };
+
+  return `<div class="subgroup-row">
+    <div class="group-name">${displayNameOverride || name}</div>
+    <div class="group-total">n=${t}</div>
+    <div class="stacked-bar"
+         title="Above ${a} (${aPct.toFixed(1)}%) · Near ${n} (${nPct.toFixed(1)}%) · Below ${b} (${bPct.toFixed(1)}%)">
+      ${a > 0 ? `<div class="stacked-seg above" style="width:${aPct}%" title="Above Standard: ${a} students (${aPct.toFixed(1)}%)">${segText(aPct, a)}</div>` : ''}
+      ${n > 0 ? `<div class="stacked-seg near" style="width:${nPct}%" title="Near Standard: ${n} students (${nPct.toFixed(1)}%)">${segText(nPct, n)}</div>` : ''}
+      ${b > 0 ? `<div class="stacked-seg below" style="width:${bPct}%" title="Below Standard: ${b} students (${bPct.toFixed(1)}%)">${segText(bPct, b)}</div>` : ''}
+    </div>
+    <div class="group-avg ${avgClass}">${avg.toFixed(0)}</div>
+  </div>`;
+}
+
+// Grade rows
+const gradeOrder = ['G9', 'G10'];
+document.getElementById('gradeRows').innerHTML = gradeOrder
+  .filter(g => DATA.byGrade[g])
+  .map(g => makeRow(g, DATA.byGrade[g], `Grade ${g.replace('G','')}`))
+  .join('');
+
+// ELA Status rows
+const elaOrder = ['English Only', 'Reclassified Fluent English Proficient', 'Initial Fluent English Proficient', 'English Learner'];
+document.getElementById('elaRows').innerHTML = elaOrder
+  .filter(s => DATA.byELA[s])
+  .map(s => makeRow(s, DATA.byELA[s]))
+  .join('');
+
+// Race rows
+const raceEntries = Object.entries(DATA.byRace).sort((a,b) => b[1].total - a[1].total);
+document.getElementById('raceRows').innerHTML = raceEntries
+  .map(([name, group]) => {
+    let display = name;
+    if (group.total < 10) {
+      display = `${name} <span class="small-note">· small group</span>`;
+    }
+    return makeRow(name, group, display);
+  })
+  .join('');
+
+// Language rows
+const langEntries = Object.entries(DATA.byLanguage).sort((a,b) => b[1].total - a[1].total);
+document.getElementById('langRows').innerHTML = langEntries
+  .map(([name, group]) => {
+    let display = name.replace('; Castilian','').replace('; Punjabi','').replace(' (Farsi)','');
+    return makeRow(name, group, display);
+  })
+  .join('');
+
+// =========================================================
+// PERFORMANCE TAB — Item-level analysis (Tab 2)
+// =========================================================
+const items = DATA.items;
+const byDiff = DATA.itemByDifficulty;
+const byStd = DATA.itemByStandard;
+
+// Difficulty summary cards
+const diffOrder = ['Easy', 'Moderate', 'Difficult'];
+
+// What does each tier mean? Plain-language interpretation for teachers.
+const DIFF_INTERPRETATIONS = {
+  'Easy': 'Items the test designers expected most 11–12th graders to answer correctly with little scaffolding. A single Easy item appeared on this IAB (#8), and 73% of Westbrook students earned full credit — solid performance on a foundational source-evaluation skill.',
+  'Moderate': 'Items the test designers expected the average grade-level student to handle with effort. Westbrook students averaged 54.4% full credit across the seven Moderate items, but the wide 34–66% range tells the real story: some Moderate items (#2 at 66%) functioned as expected, while others (#6 at 34%) performed more like Difficult items — a mismatch worth examining in your next PLC.',
+  'Difficult': 'Items the test designers expected to challenge most 11–12th graders. With only two items in this tier, the 18% average is heavily influenced by Item 9 (5%) — a near-zero performance that suggests the underlying skill was never taught or never practiced. Item 5 (31%) performed closer to expectation for a Difficult item.'
+};
+
+document.getElementById('difficultyGrid').innerHTML = diffOrder
+  .filter(d => byDiff[d])
+  .map(d => {
+    const data = byDiff[d];
+    const itemList = data.items.map(i => `#${i}`).join(', ');
+    return `<div class="difficulty-card ${d.toLowerCase()}">
+      <div class="difficulty-card-head">
+        <div class="label">${d} items</div>
+        <div class="count">${data.count} item${data.count > 1 ? 's' : ''}</div>
+      </div>
+      <div class="big-stat">${data.avgPct}<span style="font-size: 1.25rem; font-style: normal; font-family: var(--font-headline); color: var(--on-surface-muted); font-weight: 500;">%</span></div>
+      <div class="stat-sub">avg full credit · range ${data.minPct}–${data.maxPct}% · items ${itemList}</div>
+      <p class="difficulty-card-explainer">${DIFF_INTERPRETATIONS[d]}</p>
+    </div>`;
+  })
+  .join('');
+
+// Item-by-item combined table — sorted by item number (test order)
+const sortedItems = [...items].sort((a,b) => a.item - b.item);
+
+document.getElementById('itemRowsCombined').innerHTML = sortedItems.map(it => {
+  const passPct = it.full_credit;
+  const failPct = it.zero_credit;
+
+  return `<div class="item-row" title="Item ${it.item} · ${it.difficulty} · ${it.standard} · ${passPct}% passed / ${failPct}% failed">
+    <div class="item-num">${it.item}</div>
+    <div><span class="item-difficulty ${it.difficulty.toLowerCase()}">${it.difficulty}</span></div>
+    <div class="item-standard">${it.standard}</div>
+    <div class="item-bar-wrap diverging">
+      <div class="item-bar item-bar-pass" style="width:${passPct}%">${passPct >= 12 ? passPct + '%' : ''}</div>
+      <div class="item-bar item-bar-fail" style="width:${failPct}%">${failPct >= 12 ? failPct + '%' : ''}</div>
+    </div>
+    <div class="item-pct"><span class="pass-pct">${passPct}%</span></div>
+    <div class="item-pct fail" style="text-align:right"><span class="pass-pct">${failPct}%</span></div>
+  </div>`;
+}).join('');
+
+// Standard summaries
+document.getElementById('whst8Pct').textContent = byStd['11-12.WHST.8'].avgPct + '%';
+document.getElementById('whst8Items').textContent = byStd['11-12.WHST.8'].count;
+document.getElementById('whst8Range').textContent = byStd['11-12.WHST.8'].minPct + '–' + byStd['11-12.WHST.8'].maxPct + '%';
+
+document.getElementById('w8Pct').textContent = byStd['11-12.W.8'].avgPct + '%';
+document.getElementById('w8Items').textContent = byStd['11-12.W.8'].count;
+document.getElementById('w8Range').textContent = byStd['11-12.W.8'].minPct + '–' + byStd['11-12.W.8'].maxPct + '%';
+
+// =========================================================
+// POPULATION GRAPHIC — Tab 3 top section
+// =========================================================
+const POP_LABELS = {
+  'Grade': { title: 'By Grade Level' },
+  'ELA Status': { title: 'By English Language Acquisition Status' },
+  'Race/Ethnicity': { title: 'By Race and Ethnicity' },
+  'Home Language': { title: 'By Home Language (top 8)' }
+};
+
+// Expand any abbreviated or shorthand subgroup names to full versions
+const NAME_EXPANSIONS = {
+  // Race / Ethnicity
+  'Native Hawaiian/Pacific Islander': 'Native Hawaiian or Other Pacific Islander',
+  'American Indian/Alaska Native': 'American Indian or Alaska Native',
+  'Two or More Races': 'Students Identifying with Two or More Races',
+  'Not Reported': 'Race or Ethnicity Not Reported',
+  // Home Language
+  'Spanish; Castilian': 'Spanish (Castilian)',
+  'Panjabi; Punjabi': 'Punjabi',
+  'Persian (Farsi)': 'Persian (Farsi)',
+  'Uncoded languages (Other non-English languages)': 'Other Non-English Languages'
+};
+
+function fullName(name) {
+  return NAME_EXPANSIONS[name] || name;
+}
+
+function renderPopCategory(catKey, items, totalN) {
+  const meta = POP_LABELS[catKey];
+  const max = Math.max(...items.map(i => i.n));
+  const small = items.length > 6;
+  // Cap to top 8 for home language
+  const display = catKey === 'Home Language' ? items.slice(0, 8) : items;
+
+  const rows = display.map(item => {
+    const w = (item.n / max) * 100;
+    const pct = ((item.n / totalN) * 100).toFixed(1);
+    const name = fullName(item.name);
+    return `<div class="pop-row" title="${name}: ${item.n} students (${pct}% of total)">
+      <div class="pop-row-name">${name}</div>
+      <div class="pop-row-bar-wrap"><div class="pop-row-bar" style="width:${w}%"></div></div>
+      <div class="pop-row-count">${item.n}<span class="pct">${pct}%</span></div>
+    </div>`;
+  }).join('');
+
+  return `<div class="pop-cat ${small ? 'pop-cat--small' : ''}">
+    <div class="pop-cat-head">
+      <div class="pop-cat-title">${meta.title}</div>
+      <div class="pop-cat-total">${display.length} group${display.length>1?'s':''}</div>
+    </div>
+    ${rows}
+  </div>`;
+}
+
+// Render in deliberate order
+const popOrder = ['Grade', 'ELA Status', 'Race/Ethnicity', 'Home Language'];
+document.getElementById('popGrid').innerHTML =
+  popOrder.map(cat => renderPopCategory(cat, DATA.populations[cat], total)).join('');
+
+// =========================================================
+// SUBGROUP CARDS — Tab 3 (Thriving / Need Support)
+// =========================================================
+function makeSubgroupCard(s, kind) {
+  const aPct = s.above_pct;
+  const nPct = s.near_pct;
+  const bPct = s.below_pct;
+  const focusPct = kind === 'thriving'
+    ? `<span class="above-pct"><strong>${aPct.toFixed(1)}%</strong> Above Standard</span>`
+    : `<span class="below-pct"><strong>${bPct.toFixed(1)}%</strong> Below Standard</span>`;
+
+  return `<div class="profile-card">
+    <div class="profile-head">
+      <div>
+        <div class="profile-cat">${s.category}</div>
+        <div class="profile-name">${s.subgroup}</div>
+      </div>
+      <div class="profile-score">${s.avg}</div>
+    </div>
+    <div class="profile-meta">
+      <span><strong>n=${s.n}</strong> students</span>
+      ${focusPct}
+    </div>
+    <div class="profile-strip" title="Above ${s.above} (${aPct.toFixed(1)}%) · Near ${s.near} (${nPct.toFixed(1)}%) · Below ${s.below} (${bPct.toFixed(1)}%)">
+      <div class="seg-above" style="width:${aPct}%"></div>
+      <div class="seg-near" style="width:${nPct}%"></div>
+      <div class="seg-below" style="width:${bPct}%"></div>
+    </div>
+  </div>`;
+}
+
+document.getElementById('topSubgroups').innerHTML =
+  DATA.topSubgroups.map(s => makeSubgroupCard(s, 'thriving')).join('');
+document.getElementById('bottomSubgroups').innerHTML =
+  DATA.bottomSubgroups.map(s => makeSubgroupCard(s, 'struggling')).join('');
+</script>
+</body>
+</html>
